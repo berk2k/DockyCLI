@@ -43,9 +43,12 @@ namespace DockyCLI.Infrastructure
             _provider = provider;
         }
 
-        public object Resolve(Type? type)
+        public object? Resolve(Type? type)
         {
-            return _provider.GetService(type!);
+            if (type == null)
+                return null;
+
+            return _provider.GetService(type);
         }
 
         public void Dispose()
