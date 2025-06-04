@@ -1,14 +1,21 @@
 ﻿using Spectre.Console.Cli;
+using Microsoft.Extensions.DependencyInjection;
+using DockyCLI.Infrastructure;
+using DockyCLI.Commands;
+using DockyCLI.Services;
 
-using System;
-using System.ComponentModel;
 
-var app = new CommandApp();
+
+var services = new ServiceCollection();
+services.AddSingleton<IDockerService, DockerService>();
+
+var registrar = new TypeRegistrar(services);
+var app = new CommandApp(registrar);
 
 app.Configure(config =>
 {
     config.SetApplicationName("docky");
-    config.AddCommand<DockyCLI.Commands.ListContainersCommand>("list")
+    config.AddCommand<ListContainersCommand>("list")
         .WithDescription("Listing Docker Containers");
 });
 
