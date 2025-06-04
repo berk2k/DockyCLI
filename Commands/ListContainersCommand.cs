@@ -1,4 +1,5 @@
-﻿using DockyCLI.Services;
+﻿using DockyCLI.Presantation;
+using DockyCLI.Services;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
@@ -13,25 +14,34 @@ namespace DockyCLI.Commands
     public class ListContainersCommand : Command<ListContainersCommand.Settings>
     {
         private readonly IDockerService _dockerService;
-        public ListContainersCommand(IDockerService dockerService)
+        private readonly OutputRenderer _renderer;
+
+        public ListContainersCommand(IDockerService dockerService, OutputRenderer renderer)
         {
             _dockerService = dockerService;
+            _renderer = renderer;
         }
         public class Settings : CommandSettings { }
 
         public override int Execute(CommandContext context, Settings settings)
         {
-            var (output, error) = _dockerService.RunDockerCommand("ps");
-
-            if (!string.IsNullOrWhiteSpace(error))
+            try
             {
-                AnsiConsole.MarkupLine($"[red]Error:[/] {error}");
+                var containers = _dockerService.GetRunningContainers();
+
+                if (containers.Count == 0)
+                {
+                    AnsiConsole.MarkupLine("[yellow]No running containers found.[/]");
+                    return 0;
+                }
+                _renderer.RenderContainerTable(containers);
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[red]Error:[/] {ex.Message}");
                 return -1;
             }
-
-            AnsiConsole.MarkupLine("[green]Active Docker containers:[/]");
-            AnsiConsole.WriteLine(output);
-            return 0;
         }
     }
 }
