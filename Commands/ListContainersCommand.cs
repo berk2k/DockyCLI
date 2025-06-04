@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using DockyCLI.Services;
+using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
 using System.Collections.Generic;
@@ -11,45 +12,26 @@ namespace DockyCLI.Commands
 {
     public class ListContainersCommand : Command<ListContainersCommand.Settings>
     {
+        private readonly IDockerService _dockerService;
+        public ListContainersCommand(IDockerService dockerService)
+        {
+            _dockerService = dockerService;
+        }
+        public class Settings : CommandSettings { }
+
         public override int Execute(CommandContext context, Settings settings)
         {
-            try
+            var (output, error) = _dockerService.RunDockerCommand("ps");
+
+            if (!string.IsNullOrWhiteSpace(error))
             {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "docker",
-                        Arguments = "ps",
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }
-                };
-
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
-
-                if (!string.IsNullOrWhiteSpace(error))
-                {
-                    AnsiConsole.MarkupLine($"[red]Error:[/] {error}");
-                    return -1;
-                }
-                AnsiConsole.MarkupLine("[green]Active Docker containers:[/]");
-                AnsiConsole.WriteLine(output);
-
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                AnsiConsole.MarkupLine($"[red]Exception:[/] {ex.Message}");
+                AnsiConsole.MarkupLine($"[red]Error:[/] {error}");
                 return -1;
             }
-        }
 
-        public class Settings : CommandSettings { }
+            AnsiConsole.MarkupLine("[green]Active Docker containers:[/]");
+            AnsiConsole.WriteLine(output);
+            return 0;
+        }
     }
 }
