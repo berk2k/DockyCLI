@@ -48,5 +48,31 @@ namespace DockyCLI.Presantation
         {
             return text.Trim('"');
         }
+        public void RenderImageTable(List<ImageInfo> images)
+        {
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .Title("[bold underline green]Docker Images[/]")
+                .AddColumn("Repository")
+                .AddColumn("Tag")
+                .AddColumn("Image ID")
+                .AddColumn("Created")
+                .AddColumn("Size");
+
+            foreach (var image in images)
+            {
+                table.AddRow(
+                    image.Repository,
+                    image.Tag,
+                    Shorten(image.ImageId),
+                    image.Created,
+                    image.Size
+                );
+            }
+
+            AnsiConsole.Write(table);
+        }
     }
+
+
 }
