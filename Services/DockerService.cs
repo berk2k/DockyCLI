@@ -11,14 +11,14 @@ namespace DockyCLI.Services
 {
     public class DockerService : IDockerService
     {
-        public List<ContainerInfo> GetRunningContainers()
+        private List<T> RunDockerCommandAndParse<T>(string arguments, Func<string, List<T>> parseFunc)
         {
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "docker",
-                    Arguments = "ps",
+                    Arguments = arguments,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -27,16 +27,24 @@ namespace DockyCLI.Services
             };
 
             process.Start();
-
             var output = process.StandardOutput.ReadToEnd();
             var error = process.StandardError.ReadToEnd();
-
             process.WaitForExit();
 
             if (!string.IsNullOrWhiteSpace(error))
                 throw new Exception($"Docker error: {error}");
 
-            return ParseDockerPsOutput(output);
+            return parseFunc(output);
+        }
+
+        public List<ImageInfo> GetImages()
+        {
+            return RunDockerCommandAndParse("images", ParseDockerImagesOutput);
+        }
+
+        public List<ContainerInfo> GetRunningContainers()
+        {
+            return RunDockerCommandAndParse("ps", ParseDockerPsOutput);
         }
 
         private List<ContainerInfo> ParseDockerPsOutput(string output)
@@ -66,6 +74,33 @@ namespace DockyCLI.Services
             }
 
             return containers;
+        }
+
+        private List<ImageInfo> ParseDockerImagesOutput(string output)
+        {
+            var lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            if (lines.Length < 2)
+                return new List<ImageInfo>();
+
+            var images = new List<ImageInfo>();
+
+            foreach (var line in lines.Skip(1))
+            {
+                var parts = Regex.Split(line.Trim(), @"\s{2,}");
+                if (parts.Length < 5)
+                    continue;
+
+                images.Add(new ImageInfo
+                {
+                    Repository = parts[0],
+                    Tag = parts[1],
+                    ImageId = parts[2],
+                    Created = parts[3],
+                    Size = parts[4]
+                });
+            }
+
+            return images;
         }
     }
 }
