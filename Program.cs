@@ -19,6 +19,8 @@ app.Configure(config =>
     config.SetApplicationName("docky");
     config.AddCommand<ListContainersCommand>("list")
         .WithDescription("Listing Docker Containers");
+    config.AddCommand<ListImagesCommand>("images")
+        .WithDescription("Listing Docker Images");
 });
 
 return app.Run(args);
