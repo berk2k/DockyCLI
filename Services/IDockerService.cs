@@ -10,5 +10,6 @@ namespace DockyCLI.Services
     public interface IDockerService
     {
         List<ContainerInfo> GetRunningContainers();
+        List<ImageInfo> GetImages();
     }
 }

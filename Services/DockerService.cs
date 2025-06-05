@@ -11,6 +11,7 @@ namespace DockyCLI.Services
 {
     public class DockerService : IDockerService
     {
+        // helper method
         private List<T> RunDockerCommandAndParse<T>(string arguments, Func<string, List<T>> parseFunc)
         {
             var process = new Process
