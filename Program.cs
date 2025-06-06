@@ -24,7 +24,9 @@ app.Configure(config =>
     config.AddCommand<StartContainersCommand>("start")
         .WithDescription("Starting Docker Container");
     config.AddCommand<StopContainersCommand>("stop")
-    .WithDescription("Stopping Docker Container");
+        .WithDescription("Stopping Docker Container");
+    config.AddCommand<GetLogsCommand>("logs")
+        .WithDescription("Getting Docker Container logs");
 });
 
 return app.Run(args);
