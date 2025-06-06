@@ -142,5 +142,17 @@ namespace DockyCLI.Services
 
             return success;
         }
+
+        public bool StopContainer(string containerId)
+        {
+            var (success, output, error) = RunDockerCommand("stop", containerId);
+
+            if (!success)
+                AnsiConsole.MarkupLine($"[red]Docker error:[/] {error}");
+            else
+                AnsiConsole.MarkupLine($"[green]Container stopped:[/] {output}");
+
+            return success;
+        }
     }
 }
