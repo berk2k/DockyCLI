@@ -15,5 +15,7 @@ namespace DockyCLI.Services
 
         bool StopContainer(string containerId);
 
+        bool GetLogs(string containerId);
+
     }
 }

@@ -154,5 +154,17 @@ namespace DockyCLI.Services
 
             return success;
         }
+
+        public bool GetLogs(string containerId)
+        {
+            var (success, output, error) = RunDockerCommand("logs", containerId);
+
+            if (!success)
+                AnsiConsole.MarkupLine($"[red]Docker error:[/] {error}");
+            else
+                AnsiConsole.MarkupLine($"[green]Container logs:[/] {output}");
+
+            return success;
+        }
     }
 }
