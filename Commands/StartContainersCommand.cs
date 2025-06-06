@@ -3,11 +3,11 @@ using DockyCLI.Services;
 
 namespace DockyCLI.Commands
 {
-    public class StartContainerCommand : Command<StartContainerCommand.Settings>
+    public class StartContainersCommand : Command<StartContainersCommand.Settings>
     {
         private readonly IDockerService _dockerService;
 
-        public StartContainerCommand(IDockerService dockerService)
+        public StartContainersCommand(IDockerService dockerService)
         {
             _dockerService = dockerService;
         }
