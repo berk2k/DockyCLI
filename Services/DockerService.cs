@@ -1,4 +1,5 @@
 ﻿using DockyCLI.Models;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,6 +38,7 @@ namespace DockyCLI.Services
 
             return parseFunc(output);
         }
+
 
         public List<ImageInfo> GetImages()
         {
@@ -102,6 +104,43 @@ namespace DockyCLI.Services
             }
 
             return images;
+        }
+
+        public (bool success, string output, string error) RunDockerCommand(string subCommand, string targetId)
+        {
+            var arguments = $"{subCommand} {targetId}";
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "docker",
+                    Arguments = arguments,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            var output = process.StandardOutput.ReadToEnd();
+            var error = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+
+            return (string.IsNullOrWhiteSpace(error), output.Trim(), error.Trim());
+        }
+
+        public bool StartContainer(string containerId)
+        {
+            var (success, output, error) = RunDockerCommand("start", containerId);
+
+            if (!success)
+                AnsiConsole.MarkupLine($"[red]Docker error:[/] {error}");
+            else
+                AnsiConsole.MarkupLine($"[green]Container started:[/] {output}");
+
+            return success;
         }
     }
 }

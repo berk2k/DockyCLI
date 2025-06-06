@@ -11,5 +11,8 @@ namespace DockyCLI.Services
     {
         List<ContainerInfo> GetRunningContainers();
         List<ImageInfo> GetImages();
+
+        bool StartContainer(string containerId);
+
     }
 }
