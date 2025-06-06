@@ -17,5 +17,7 @@ namespace DockyCLI.Services
 
         public string GetContainerLogs(string containerId);
 
+        public bool RestartContainer(string containerId);
+
     }
 }

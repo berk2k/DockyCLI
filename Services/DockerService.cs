@@ -167,5 +167,18 @@ namespace DockyCLI.Services
             return output;
         }
 
+        public bool RestartContainer(string containerId)
+        {
+            var (success, output, error) = RunDockerCommand("restart", containerId);
+
+            if (!success)
+            {
+                throw new Exception($"Docker error while restarting container: {error}");
+            }
+
+            return true;
+        }
+
+
     }
 }
