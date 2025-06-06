@@ -23,7 +23,7 @@ app.Configure(config =>
         .WithDescription("Listing Docker Images");
     config.AddCommand<StartContainersCommand>("start")
         .WithDescription("Starting Docker Container");
-    config.AddCommand<StopContainerCommand>("stop")
+    config.AddCommand<StopContainersCommand>("stop")
     .WithDescription("Stopping Docker Container");
 });
 
