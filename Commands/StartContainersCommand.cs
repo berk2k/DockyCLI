@@ -15,7 +15,7 @@ namespace DockyCLI.Commands
         public class Settings : CommandSettings
         {
             [CommandArgument(0, "<id>")]
-            public string ContainerId { get; set; }
+            public string ContainerId { get; set; } = string.Empty;
         }
 
         public override int Execute(CommandContext context, Settings settings)
