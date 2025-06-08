@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DockyCLI", "DockyCLI.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docky.Core", "..\Docky.Core\Docky.Core.csproj", "{3C1EBE1D-E981-44A0-9C09-7A1192F32E8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docky.Desktop", "..\Docky.Desktop\Docky.Desktop.csproj", "{15912A3D-5059-4371-A7D8-5084CA78D95D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3C1EBE1D-E981-44A0-9C09-7A1192F32E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C1EBE1D-E981-44A0-9C09-7A1192F32E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C1EBE1D-E981-44A0-9C09-7A1192F32E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15912A3D-5059-4371-A7D8-5084CA78D95D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15912A3D-5059-4371-A7D8-5084CA78D95D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15912A3D-5059-4371-A7D8-5084CA78D95D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15912A3D-5059-4371-A7D8-5084CA78D95D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
