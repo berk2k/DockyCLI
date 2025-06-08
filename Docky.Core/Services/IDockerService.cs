@@ -7,6 +7,8 @@ namespace Docky.Core.Services
     {
         List<ImageInfo> GetImages();
         List<ContainerInfo> GetRunningContainers();
+
+        List<ContainerInfo> GetAllContainers();
         (bool Success, string Output, string Error) StartContainer(string containerId);
         (bool Success, string Output, string Error) StopContainer(string containerId);
         (bool Success, string Output, string Error) RestartContainer(string containerId);

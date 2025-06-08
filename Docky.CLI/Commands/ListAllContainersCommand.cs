@@ -1,17 +1,21 @@
-﻿using DockyCLI.Presantation;
-using Docky.Core.Services;
-using Spectre.Console;
+﻿using Docky.Core.Services;
+using DockyCLI.Presantation;
 using Spectre.Console.Cli;
-
+using Spectre.Console;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DockyCLI.Commands
 {
-    public class ListContainersCommand : Command<ListContainersCommand.Settings>
+    public class ListAllContainersCommand : Command<ListAllContainersCommand.Settings>
     {
         private readonly IDockerService _dockerService;
         private readonly OutputRenderer _renderer;
 
-        public ListContainersCommand(IDockerService dockerService, OutputRenderer renderer)
+        public ListAllContainersCommand(IDockerService dockerService, OutputRenderer renderer)
         {
             _dockerService = dockerService;
             _renderer = renderer;

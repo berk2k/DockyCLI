@@ -17,7 +17,9 @@ var app = new CommandApp(registrar);
 app.Configure(config =>
 {
     config.SetApplicationName("docky");
-    config.AddCommand<ListContainersCommand>("list")
+    config.AddCommand<ListRunningContainersCommand>("list")
+        .WithDescription("Listing Running Docker Containers");
+    config.AddCommand<ListAllContainersCommand>("list all")
         .WithDescription("Listing Docker Containers");
     config.AddCommand<ListImagesCommand>("images")
         .WithDescription("Listing Docker Images");

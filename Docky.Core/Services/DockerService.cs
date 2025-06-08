@@ -49,6 +49,11 @@ namespace Docky.Core.Services
             return RunDockerCommandAndParse("ps", ParseDockerPsOutput);
         }
 
+        public List<ContainerInfo> GetAllContainers()
+        {
+            return RunDockerCommandAndParse("ps -a", ParseDockerPsOutput);
+        }
+
         private List<ContainerInfo> ParseDockerPsOutput(string output)
         {
             var lines = output.Split('\n',StringSplitOptions.RemoveEmptyEntries);
