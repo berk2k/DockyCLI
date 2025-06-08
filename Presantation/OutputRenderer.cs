@@ -1,4 +1,4 @@
-﻿using DockyCLI.Models;
+﻿using Docky.Core.Models;
 using Spectre.Console;
 using System;
 using System.Collections.Generic;

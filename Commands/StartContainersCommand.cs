@@ -1,5 +1,7 @@
 ﻿using Spectre.Console.Cli;
-using DockyCLI.Services;
+using Docky.Core.Services;
+using Spectre.Console;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DockyCLI.Commands
 {
@@ -20,8 +22,18 @@ namespace DockyCLI.Commands
 
         public override int Execute(CommandContext context, Settings settings)
         {
-            var success = _dockerService.StartContainer(settings.ContainerId);
-            return success ? 0 : -1;
+            (bool Success, string Output, string Error) = _dockerService.StartContainer(settings.ContainerId);
+            if (Success)
+            {
+                AnsiConsole.MarkupLine($"[green]Container started successfully:[/] {Output}");
+                return 0;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"[red]Failed to start container:[/] {Error}");
+                return -1;
+            }
+            
         }
     }
 }

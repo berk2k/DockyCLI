@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using DockyCLI.Infrastructure;
 using DockyCLI.Commands;
-using DockyCLI.Services;
+using Docky.Core.Services;
 using DockyCLI.Presantation;
 
 

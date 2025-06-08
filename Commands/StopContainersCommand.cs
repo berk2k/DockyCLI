@@ -1,10 +1,7 @@
-﻿using DockyCLI.Services;
+﻿using Docky.Core.Services;
+using Spectre.Console;
 using Spectre.Console.Cli;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DockyCLI.Commands
 {
@@ -19,8 +16,17 @@ namespace DockyCLI.Commands
 
         public override int Execute(CommandContext context, Settings settings)
         {
-            var success = _dockerService.StopContainer(settings.ContainerId);
-            return success ? 0 : -1;
+            (bool Success, string Output, string Error) = _dockerService.StopContainer(settings.ContainerId);
+            if (Success)
+            {
+                AnsiConsole.MarkupLine($"[green]Container stopped successfully:[/] {Output}");
+                return 0;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"[red]Failed to stop container:[/] {Error}");
+                return -1;
+            }
         }
 
         public class Settings : CommandSettings

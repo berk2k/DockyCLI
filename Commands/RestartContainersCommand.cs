@@ -1,12 +1,8 @@
-﻿using DockyCLI.Services;
+﻿using Docky.Core.Services;
 using Spectre.Console.Cli;
 using Spectre.Console;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DockyCLI.Commands
 {

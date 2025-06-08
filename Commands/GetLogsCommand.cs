@@ -1,11 +1,8 @@
-﻿using DockyCLI.Services;
+﻿using Docky.Core.Services;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+
 
 namespace DockyCLI.Commands
 {
@@ -20,18 +17,17 @@ namespace DockyCLI.Commands
 
         public override int Execute(CommandContext context, Settings settings)
         {
-            try
+            var (success, output, error) = _dockerService.GetContainerLogs(settings.ContainerId);
+
+            if (!success)
             {
-                var logs = _dockerService.GetContainerLogs(settings.ContainerId);
-                AnsiConsole.MarkupLine($"[green]Logs for container {settings.ContainerId}:[/]");
-                AnsiConsole.WriteLine(logs);
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                AnsiConsole.MarkupLine($"[red]Error:[/] {ex.Message}");
+                AnsiConsole.MarkupLine($"[red]Error:[/] {error}");
                 return -1;
             }
+
+            AnsiConsole.MarkupLine($"[green]Logs for container {settings.ContainerId}:[/]");
+            AnsiConsole.WriteLine(output);
+            return 0;
         }
 
         public class Settings : CommandSettings
