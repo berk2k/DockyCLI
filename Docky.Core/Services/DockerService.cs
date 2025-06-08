@@ -51,7 +51,7 @@ namespace Docky.Core.Services
 
         public List<ContainerInfo> GetAllContainers()
         {
-            return RunDockerCommandAndParse("ps -a", ParseDockerPsOutput);
+            return RunDockerCommandAndParse("ps -a --format \"{{.ID}}|{{.Image}}|{{.Command}}|{{.CreatedAt}}|{{.Status}}|{{.Ports}}|{{.Names}}\"", ParseDockerPsFormatOutput);
         }
 
         private List<ContainerInfo> ParseDockerPsOutput(string output)
@@ -78,6 +78,33 @@ namespace Docky.Core.Services
                     Ports = parts[5],
                     Names = parts[6]
                 });
+            }
+
+            return containers;
+        }
+
+        private List<ContainerInfo> ParseDockerPsFormatOutput(string output)
+        {
+            var containers = new List<ContainerInfo>();
+
+            var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var line in lines)
+            {
+                var parts = line.Split('|');
+                if (parts.Length == 7)
+                {
+                    containers.Add(new ContainerInfo
+                    {
+                        ContainerId = parts[0],
+                        Image = parts[1],
+                        Command = parts[2].Trim('"'),
+                        Created = parts[3],
+                        Status = parts[4],
+                        Ports = parts[5],
+                        Names = parts[6]
+                    });
+                }
             }
 
             return containers;

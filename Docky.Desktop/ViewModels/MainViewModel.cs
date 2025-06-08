@@ -27,7 +27,7 @@ namespace Docky.Desktop.ViewModels
         private void LoadContainers()
         {
             Containers.Clear();
-            var containers = _dockerService.GetRunningContainers();
+            var containers = _dockerService.GetAllContainers();
             foreach (var container in containers)
                 Containers.Add(container);
         }

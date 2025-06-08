@@ -4,8 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Docky.Desktop"
+        xmlns:converters="clr-namespace:Docky.Desktop.Converters"
         mc:Ignorable="d"
         Title="Docky - Container Manager" Height="450" Width="800">
+
+    <Window.Resources>
+        <converters:StatusToStartVisibilityConverter x:Key="StatusToStartVisibilityConverter" />
+       
+        <converters:StatusToStopVisibilityConverter x:Key="StatusToStopVisibilityConverter" />
+    </Window.Resources>
 
     <Grid>
         <DataGrid ItemsSource="{Binding Containers}" 
@@ -20,23 +27,23 @@
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*" />
                 <DataGridTextColumn Header="Ports" Binding="{Binding Ports}" Width="*" />
                 <DataGridTextColumn Header="Name" Binding="{Binding Names}" Width="*" />
-                <DataGridTemplateColumn Header="Actions" Width="Auto">
+                <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Stop"
-                    Command="{Binding DataContext.StopContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                    CommandParameter="{Binding}" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="Start"
+                                        Command="{Binding DataContext.StartContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}"
+                                        Visibility="{Binding Status, Converter={StaticResource StatusToStartVisibilityConverter}}" />
+                                <Button Content="Stop"
+                                        Command="{Binding DataContext.StopContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}"
+                                        Visibility="{Binding Status, Converter={StaticResource StatusToStopVisibilityConverter}}" />
+                            </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
-
             </DataGrid.Columns>
         </DataGrid>
-
-      
-
     </Grid>
-    
 </Window>
-
