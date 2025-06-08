@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "6ypw5H4aTF0=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\monster\\Desktop\\.net projects\\DockyCLI\\Docky.Desktop\\Docky.Desktop.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\monster\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\9.0.5\\microsoft.extensions.dependencyinjection.9.0.5.nupkg.sha512",
+    "C:\\Users\\monster\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.5\\microsoft.extensions.dependencyinjection.abstractions.9.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
