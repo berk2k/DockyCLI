@@ -6,44 +6,66 @@
         xmlns:local="clr-namespace:Docky.Desktop"
         xmlns:converters="clr-namespace:Docky.Desktop.Converters"
         mc:Ignorable="d"
-        Title="Docky - Container Manager" Height="450" Width="800">
+        Title="Docky - Container Manager" Height="700" Width="1000">
 
     <Window.Resources>
         <converters:StatusToStartVisibilityConverter x:Key="StatusToStartVisibilityConverter" />
-       
         <converters:StatusToStopVisibilityConverter x:Key="StatusToStopVisibilityConverter" />
     </Window.Resources>
 
-    <Grid>
-        <DataGrid ItemsSource="{Binding Containers}" 
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  Margin="10">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding ContainerId}" Width="*" />
-                <DataGridTextColumn Header="Image" Binding="{Binding Image}" Width="*" />
-                <DataGridTextColumn Header="Command" Binding="{Binding Command}" Width="*" />
-                <DataGridTextColumn Header="Created" Binding="{Binding Created}" Width="*" />
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*" />
-                <DataGridTextColumn Header="Ports" Binding="{Binding Ports}" Width="*" />
-                <DataGridTextColumn Header="Name" Binding="{Binding Names}" Width="*" />
-                <DataGridTemplateColumn Header="Actions">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Content="Start"
-                                        Command="{Binding DataContext.StartContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                        CommandParameter="{Binding}"
-                                        Visibility="{Binding Status, Converter={StaticResource StatusToStartVisibilityConverter}}" />
-                                <Button Content="Stop"
-                                        Command="{Binding DataContext.StopContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                        CommandParameter="{Binding}"
-                                        Visibility="{Binding Status, Converter={StaticResource StatusToStopVisibilityConverter}}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-    </Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+
+            
+            <TextBlock Text="Docker Containers" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+            <DataGrid ItemsSource="{Binding Containers}" 
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      Margin="0,0,0,20"
+                      Height="300">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding ContainerId}" Width="*" />
+                    <DataGridTextColumn Header="Image" Binding="{Binding Image}" Width="*" />
+                    <DataGridTextColumn Header="Command" Binding="{Binding Command}" Width="*" />
+                    <DataGridTextColumn Header="Created" Binding="{Binding Created}" Width="*" />
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*" />
+                    <DataGridTextColumn Header="Ports" Binding="{Binding Ports}" Width="*" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Names}" Width="*" />
+                    <DataGridTemplateColumn Header="Actions">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Start"
+                                            Command="{Binding DataContext.StartContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Visibility="{Binding Status, Converter={StaticResource StatusToStartVisibilityConverter}}" />
+                                    <Button Content="Stop"
+                                            Command="{Binding DataContext.StopContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Visibility="{Binding Status, Converter={StaticResource StatusToStopVisibilityConverter}}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            
+            <TextBlock Text="Docker Images" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+            <DataGrid ItemsSource="{Binding Images}" 
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      Height="200">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Repository" Binding="{Binding Repository}" Width="*" />
+                    <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" />
+                    <DataGridTextColumn Header="Image ID" Binding="{Binding ImageId}" Width="*" />
+                    <DataGridTextColumn Header="Created" Binding="{Binding Created}" Width="*" />
+                    <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="*" />
+                    
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </StackPanel>
+    </ScrollViewer>
 </Window>

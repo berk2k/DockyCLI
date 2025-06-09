@@ -3,7 +3,6 @@ using Docky.Core.Services;
 using Docky.Desktop.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Docky.Desktop.ViewModels
 {
@@ -12,18 +11,23 @@ namespace Docky.Desktop.ViewModels
         private readonly IDockerService _dockerService;
 
         public ObservableCollection<ContainerInfo> Containers { get; set; }
+        public ObservableCollection<ImageInfo> Images { get; set; }
 
         public ICommand StopContainerCommand { get; }
         public ICommand StartContainerCommand { get; }
+
+
 
         public MainViewModel(IDockerService dockerService)
         {
             _dockerService = dockerService;
             Containers = new ObservableCollection<ContainerInfo>();
+            Images = new ObservableCollection<ImageInfo>();
             StopContainerCommand = new RelayCommand(StopContainer);
             StartContainerCommand = new RelayCommand(StartContainer);
 
             LoadContainers();
+            LoadImages();
         }
 
         private void LoadContainers()
@@ -34,7 +38,16 @@ namespace Docky.Desktop.ViewModels
                 Containers.Add(container);
         }
 
+        private void LoadImages()
+        {
+            Images.Clear();
+            var images = _dockerService.GetImages();
+            foreach (var image in images)
+                Images.Add(image);
+        }
+
         public void ReloadContainers() => LoadContainers();
+        public void ReloadImages() => LoadImages();
 
         private void StopContainer(object? parameter)
         {
