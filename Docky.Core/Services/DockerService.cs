@@ -190,6 +190,10 @@ namespace Docky.Core.Services
             return RunDockerCommand("pull", imageName);
         }
 
+        public (bool Success, string Output, string Error) RemoveImage(string imageId)
+        {
+            return RunDockerCommand("rmi", imageId);
+        }
 
 
     }

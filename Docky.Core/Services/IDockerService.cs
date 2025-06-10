@@ -14,6 +14,7 @@ namespace Docky.Core.Services
         (bool Success, string Output, string Error) RestartContainer(string containerId);
         (bool Success, string Output, string Error) GetContainerLogs(string containerId);
         (bool Success, string Output, string Error) PullImage(string imageName);
+        public (bool Success, string Output, string Error) RemoveImage(string imageId);
     }
 
 }
