@@ -63,12 +63,12 @@
                     <DataGridTextColumn Header="Image ID" Binding="{Binding ImageId}" Width="*" />
                     <DataGridTextColumn Header="Created" Binding="{Binding Created}" Width="*" />
                     <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="*" />
-                    <!--<DataGridTemplateColumn Header="Actions">
+                    <DataGridTemplateColumn Header="Actions">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button Content="Pull"
-                                            Command="{Binding DataContext.PullImageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    <Button Content="Remove"
+                                            Command="{Binding DataContext.RemoveImageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
                                             Background="#0078D4"
                                             Foreground="White"
@@ -79,7 +79,7 @@
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>-->
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -112,6 +112,8 @@
                                 Foreground="White"
                                 BorderThickness="0"
                                 FontWeight="Bold"/>
+                        
+                        
                     </Grid>
                 </StackPanel>
             </Border>
