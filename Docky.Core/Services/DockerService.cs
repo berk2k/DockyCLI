@@ -185,6 +185,11 @@ namespace Docky.Core.Services
             return RunDockerCommand("restart", containerId);
         }
 
+        public (bool Success, string Output, string Error) PullImage(string imageName)
+        {
+            return RunDockerCommand("pull", imageName);
+        }
+
 
 
     }
