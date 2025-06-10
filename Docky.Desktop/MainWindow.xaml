@@ -38,10 +38,22 @@
                                     <Button Content="Start"
                                             Command="{Binding DataContext.StartContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
+                                            Background="#0078D4"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Padding="10,5"
+                                            FontWeight="Bold"
+                                            Margin="2"
                                             Visibility="{Binding Status, Converter={StaticResource StatusToStartVisibilityConverter}}" />
                                     <Button Content="Stop"
                                             Command="{Binding DataContext.StopContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
+                                            Background="#0078D4"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Padding="10,5"
+                                            FontWeight="Bold"
+                                            Margin="2"
                                             Visibility="{Binding Status, Converter={StaticResource StatusToStopVisibilityConverter}}" />
                                 </StackPanel>
                             </DataTemplate>
