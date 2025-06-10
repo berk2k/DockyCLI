@@ -19,6 +19,7 @@ namespace Docky.Desktop.ViewModels
         //public ICommand PullImageCommand { get; }
         public ICommand PullNewImageCommand { get; }
 
+        public ICommand RemoveImageCommand { get; }
         public string ImageNameToPull { get; set; }
 
 
@@ -32,6 +33,7 @@ namespace Docky.Desktop.ViewModels
             StartContainerCommand = new RelayCommand(StartContainer);
             //PullImageCommand = new RelayCommand(PullImage);
             PullNewImageCommand = new RelayCommand(PullNewImage);
+            RemoveImageCommand = new RelayCommand(RemoveImage);
             ImageNameToPull = string.Empty;
 
             LoadContainers();
@@ -87,6 +89,30 @@ namespace Docky.Desktop.ViewModels
 
             ReloadImages();
             ImageNameToPull = string.Empty;
+        }
+
+        private void RemoveImage(object? parameter)
+        {
+            if (parameter is not ImageInfo image)
+                return;
+
+            var result = System.Windows.MessageBox.Show(
+                $"Are you sure you want to remove image: {image.Repository}:{image.Tag}?",
+                "Confirm Delete",
+                System.Windows.MessageBoxButton.YesNo,
+                System.Windows.MessageBoxImage.Question);
+
+            if (result != System.Windows.MessageBoxResult.Yes)
+                return;
+
+            var (Success, Output, Error) = _dockerService.RemoveImage(image.ImageId);
+
+            if (Success)
+                System.Windows.MessageBox.Show($"Image removed: {image.Repository}:{image.Tag}", "Success");
+            else
+                System.Windows.MessageBox.Show($"Failed to remove image: {Error}", "Error");
+
+            ReloadImages();
         }
 
         private void StopContainer(object? parameter)
