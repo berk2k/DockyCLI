@@ -16,7 +16,7 @@ namespace Docky.Desktop.ViewModels
         public ICommand StopContainerCommand { get; }
         public ICommand StartContainerCommand { get; }
 
-        public ICommand PullImageCommand { get; }
+        //public ICommand PullImageCommand { get; }
         public ICommand PullNewImageCommand { get; }
 
         public string ImageNameToPull { get; set; }
@@ -30,7 +30,7 @@ namespace Docky.Desktop.ViewModels
             Images = new ObservableCollection<ImageInfo>();
             StopContainerCommand = new RelayCommand(StopContainer);
             StartContainerCommand = new RelayCommand(StartContainer);
-            PullImageCommand = new RelayCommand(PullImage);
+            //PullImageCommand = new RelayCommand(PullImage);
             PullNewImageCommand = new RelayCommand(PullNewImage);
             ImageNameToPull = string.Empty;
 
@@ -57,21 +57,21 @@ namespace Docky.Desktop.ViewModels
         public void ReloadContainers() => LoadContainers();
         public void ReloadImages() => LoadImages();
 
-        private void PullImage(object? parameter)
-        {
-            if (parameter is not ImageInfo image)
-                return;
+        //private void PullImage(object? parameter)
+        //{
+        //    if (parameter is not ImageInfo image)
+        //        return;
 
-            var imageName = $"{image.Repository}:{image.Tag}";
-            var (Success, Output, Error) = _dockerService.PullImage(imageName);
+        //    var imageName = $"{image.Repository}:{image.Tag}";
+        //    var (Success, Output, Error) = _dockerService.PullImage(imageName);
 
-            if (Success)
-                System.Windows.MessageBox.Show($"Image pulled: {imageName}", "Success");
-            else
-                System.Windows.MessageBox.Show($"Failed to pull image: {Error}", "Error");
+        //    if (Success)
+        //        System.Windows.MessageBox.Show($"Image pulled: {imageName}", "Success");
+        //    else
+        //        System.Windows.MessageBox.Show($"Failed to pull image: {Error}", "Error");
 
-            ReloadImages();
-        }
+        //    ReloadImages();
+        //}
 
         private void PullNewImage(object? parameter)
         {
