@@ -207,6 +207,11 @@ namespace Docky.Core.Services
             return RunDockerCommand("start", containerId);
         }
 
+        public (bool Success, string Output, string Error) RemoveContainer(string containerId)
+        {
+            return RunDockerCommand("rm", containerId);
+        }
+
 
         public (bool Success, string Output, string Error) StopContainer(string containerId)
         {
