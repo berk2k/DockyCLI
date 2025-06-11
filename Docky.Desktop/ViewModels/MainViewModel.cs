@@ -2,23 +2,23 @@
 using Docky.Core.Services;
 using Docky.Desktop.Commands;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Docky.Desktop.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
         private readonly IDockerService _dockerService;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public ObservableCollection<ContainerInfo> Containers { get; set; }
         public ObservableCollection<ImageInfo> Images { get; set; }
 
         public ICommand StopContainerCommand { get; }
         public ICommand StartContainerCommand { get; }
-
-        //public ICommand PullImageCommand { get; }
         public ICommand PullNewImageCommand { get; }
-
         public ICommand RemoveImageCommand { get; }
         public string ImageNameToPull { get; set; }
 
@@ -31,7 +31,6 @@ namespace Docky.Desktop.ViewModels
             Images = new ObservableCollection<ImageInfo>();
             StopContainerCommand = new RelayCommand(StopContainer);
             StartContainerCommand = new RelayCommand(StartContainer);
-            //PullImageCommand = new RelayCommand(PullImage);
             PullNewImageCommand = new RelayCommand(PullNewImage);
             RemoveImageCommand = new RelayCommand(RemoveImage);
             ImageNameToPull = string.Empty;
@@ -59,21 +58,6 @@ namespace Docky.Desktop.ViewModels
         public void ReloadContainers() => LoadContainers();
         public void ReloadImages() => LoadImages();
 
-        //private void PullImage(object? parameter)
-        //{
-        //    if (parameter is not ImageInfo image)
-        //        return;
-
-        //    var imageName = $"{image.Repository}:{image.Tag}";
-        //    var (Success, Output, Error) = _dockerService.PullImage(imageName);
-
-        //    if (Success)
-        //        System.Windows.MessageBox.Show($"Image pulled: {imageName}", "Success");
-        //    else
-        //        System.Windows.MessageBox.Show($"Failed to pull image: {Error}", "Error");
-
-        //    ReloadImages();
-        //}
 
         private void PullNewImage(object? parameter)
         {
