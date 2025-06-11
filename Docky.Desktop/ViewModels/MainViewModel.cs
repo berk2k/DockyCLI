@@ -19,6 +19,8 @@ namespace Docky.Desktop.ViewModels
 
         public ICommand StopContainerCommand { get; }
         public ICommand StartContainerCommand { get; }
+
+        public ICommand RemoveContainerCommand { get; }
         public ICommand PullNewImageCommand { get; }
         public ICommand RemoveImageCommand { get; }
         public ICommand CreateContainerCommand { get; }
@@ -52,6 +54,7 @@ namespace Docky.Desktop.ViewModels
 
             StopContainerCommand = new RelayCommand(StopContainer);
             StartContainerCommand = new RelayCommand(StartContainer);
+            RemoveContainerCommand = new RelayCommand(RemoveContainer);
             PullNewImageCommand = new RelayCommand(PullNewImage);
             RemoveImageCommand = new RelayCommand(RemoveImage);
             CreateContainerCommand = new RelayCommand(CreateContainerFromImage);
@@ -121,6 +124,30 @@ namespace Docky.Desktop.ViewModels
                 System.Windows.MessageBox.Show($"Failed to remove image: {Error}", "Error");
 
             ReloadImages();
+        }
+
+        private void RemoveContainer(object? parameter)
+        {
+            if (parameter is not ContainerInfo container)
+                return;
+
+            var result = System.Windows.MessageBox.Show(
+                $"Are you sure you want to remove container: {container.Names}:{container.ContainerId}?",
+                "Confirm Delete",
+                System.Windows.MessageBoxButton.YesNo,
+                System.Windows.MessageBoxImage.Question);
+
+            if (result != System.Windows.MessageBoxResult.Yes)
+                return;
+
+            var (Success, Output, Error) = _dockerService.RemoveContainer(container.ContainerId);
+
+            if (Success)
+                System.Windows.MessageBox.Show($"Container removed: {container.Names}:{container.ContainerId}", "Success");
+            else
+                System.Windows.MessageBox.Show($"Failed to remove container: {Error}", "Error");
+
+            ReloadContainers();
         }
 
         private void CreateContainerFromImage(object? parameter)
