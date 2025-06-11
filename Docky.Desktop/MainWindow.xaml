@@ -55,6 +55,15 @@
                                             FontWeight="Bold"
                                             Margin="2"
                                             Visibility="{Binding Status, Converter={StaticResource StatusToStopVisibilityConverter}}" />
+                                    <Button Content="Remove"
+                                            Command="{Binding DataContext.RemoveContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Background="#DC3545"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Padding="10,5"
+                                            FontWeight="Bold"
+                                            Margin="2"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
