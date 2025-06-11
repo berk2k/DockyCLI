@@ -162,6 +162,46 @@ namespace Docky.Core.Services
             return (string.IsNullOrWhiteSpace(error), output.Trim(), error.Trim());
         }
 
+        private (bool Success, string Output, string Error) ExecuteDockerRunCommand(List<string> arguments)
+        {
+            var argumentsString = string.Join(" ", arguments.Select(arg =>
+                arg.Contains(' ') && !arg.StartsWith("\"") ? $"\"{arg}\"" : arg));
+
+            var fullArguments = $"run {argumentsString}";
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "docker",
+                    Arguments = fullArguments,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            try
+            {
+                process.Start();
+                var output = process.StandardOutput.ReadToEnd();
+                var error = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+
+                var success = process.ExitCode == 0 && string.IsNullOrWhiteSpace(error);
+                return (success, output.Trim(), error.Trim());
+            }
+            catch (Exception ex)
+            {
+                return (false, string.Empty, $"Process execution error: {ex.Message}");
+            }
+            finally
+            {
+                process?.Dispose();
+            }
+        }
+
         public (bool Success, string Output, string Error) StartContainer(string containerId)
         {
             return RunDockerCommand("start", containerId);
@@ -195,6 +235,81 @@ namespace Docky.Core.Services
             return RunDockerCommand("rmi", imageId);
         }
 
+        public (bool Success, string Output, string Error) CreateContainer(ContainerCreateParams parameters)
+        {
+            try
+            {
+                var arguments = new List<string>();
+
+                
+                if (parameters.DetachedMode)
+                    arguments.Add("-d");
+
+                
+                if (parameters.InteractiveMode)
+                    arguments.Add("-it");
+
+                
+                if (parameters.RemoveOnExit)
+                    arguments.Add("--rm");
+
+                
+                if (!string.IsNullOrWhiteSpace(parameters.ContainerName))
+                {
+                    arguments.Add("--name");
+                    arguments.Add(parameters.ContainerName);
+                }
+
+                if (!string.IsNullOrWhiteSpace(parameters.Ports))
+                {
+                    var ports = parameters.Ports.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var port in ports)
+                    {
+                        arguments.Add("-p");
+                        arguments.Add(port.Trim());
+                    }
+                }
+
+                
+                if (!string.IsNullOrWhiteSpace(parameters.Environment))
+                {
+                    var envVars = parameters.Environment.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var envVar in envVars)
+                    {
+                        arguments.Add("-e");
+                        arguments.Add(envVar.Trim());
+                    }
+                }
+
+                
+                if (!string.IsNullOrWhiteSpace(parameters.Volumes))
+                {
+                    var volumes = parameters.Volumes.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var volume in volumes)
+                    {
+                        arguments.Add("-v");
+                        arguments.Add(volume.Trim());
+                    }
+                }
+
+                
+                if (!string.IsNullOrWhiteSpace(parameters.AdditionalParams))
+                {
+                    var additionalParams = parameters.AdditionalParams.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    arguments.AddRange(additionalParams);
+                }
+
+               
+                arguments.Add(parameters.ImageName);
+
+                
+                return ExecuteDockerRunCommand(arguments);
+            }
+            catch (Exception ex)
+            {
+                return (false, string.Empty, $"Error creating container: {ex.Message}");
+            }
+        }
 
     }
 }
