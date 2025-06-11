@@ -9,7 +9,8 @@ namespace Docky.Desktop
     public partial class App : Application
     {
         public new static App Current => (App)Application.Current;
-        public ServiceProvider Services { get; private set; }
+        public ServiceProvider Services { get; private set; } = null!;
+
 
         protected override void OnStartup(StartupEventArgs e)
         {
