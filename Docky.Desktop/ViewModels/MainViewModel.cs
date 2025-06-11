@@ -3,6 +3,7 @@ using Docky.Core.Services;
 using Docky.Desktop.Commands;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace Docky.Desktop.ViewModels
@@ -10,8 +11,8 @@ namespace Docky.Desktop.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         private readonly IDockerService _dockerService;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
+        private string _imageNameToPull = string.Empty;
+        private CreateContainerViewModel _createContainer = new();
 
         public ObservableCollection<ContainerInfo> Containers { get; set; }
         public ObservableCollection<ImageInfo> Images { get; set; }
@@ -20,20 +21,41 @@ namespace Docky.Desktop.ViewModels
         public ICommand StartContainerCommand { get; }
         public ICommand PullNewImageCommand { get; }
         public ICommand RemoveImageCommand { get; }
-        public string ImageNameToPull { get; set; }
+        public ICommand CreateContainerCommand { get; }
+        public ICommand CreateContainerFromFormCommand { get; }
 
+        public string ImageNameToPull
+        {
+            get => _imageNameToPull;
+            set
+            {
+                _imageNameToPull = value;
+                OnPropertyChanged();
+            }
+        }
 
+        public CreateContainerViewModel CreateContainer
+        {
+            get => _createContainer;
+            set
+            {
+                _createContainer = value;
+                OnPropertyChanged();
+            }
+        }
 
         public MainViewModel(IDockerService dockerService)
         {
             _dockerService = dockerService;
             Containers = new ObservableCollection<ContainerInfo>();
             Images = new ObservableCollection<ImageInfo>();
+
             StopContainerCommand = new RelayCommand(StopContainer);
             StartContainerCommand = new RelayCommand(StartContainer);
             PullNewImageCommand = new RelayCommand(PullNewImage);
             RemoveImageCommand = new RelayCommand(RemoveImage);
-            ImageNameToPull = string.Empty;
+            CreateContainerCommand = new RelayCommand(CreateContainerFromImage);
+            CreateContainerFromFormCommand = new RelayCommand(CreateContainerFromForm);
 
             LoadContainers();
             LoadImages();
@@ -58,7 +80,6 @@ namespace Docky.Desktop.ViewModels
         public void ReloadContainers() => LoadContainers();
         public void ReloadImages() => LoadImages();
 
-
         private void PullNewImage(object? parameter)
         {
             if (string.IsNullOrWhiteSpace(ImageNameToPull))
@@ -67,7 +88,10 @@ namespace Docky.Desktop.ViewModels
             var (Success, Output, Error) = _dockerService.PullImage(ImageNameToPull);
 
             if (Success)
+            {
                 System.Windows.MessageBox.Show($"Image pulled: {ImageNameToPull}", "Success");
+                CreateContainer.ImageName = ImageNameToPull;
+            }
             else
                 System.Windows.MessageBox.Show($"Failed to pull image: {Error}", "Error");
 
@@ -99,6 +123,64 @@ namespace Docky.Desktop.ViewModels
             ReloadImages();
         }
 
+        private void CreateContainerFromImage(object? parameter)
+        {
+            if (parameter is not ImageInfo image)
+                return;
+
+            CreateContainer.ImageName = $"{image.Repository}:{image.Tag}";
+            CreateContainer.ContainerName = GenerateContainerName(image.Repository);
+
+            System.Windows.MessageBox.Show(
+                $"Image '{CreateContainer.ImageName}' loaded into the create container form. Please configure other settings and click 'Create Container'.",
+                "Ready to Create Container",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Information);
+        }
+
+        private void CreateContainerFromForm(object? parameter)
+        {
+            if (string.IsNullOrWhiteSpace(CreateContainer.ImageName))
+            {
+                System.Windows.MessageBox.Show("Please specify an image name.", "Validation Error");
+                return;
+            }
+
+            var containerParams = new ContainerCreateParams
+            {
+                ImageName = CreateContainer.ImageName,
+                ContainerName = CreateContainer.ContainerName,
+                Ports = CreateContainer.Ports,
+                Environment = CreateContainer.Environment,
+                Volumes = CreateContainer.Volumes,
+                DetachedMode = CreateContainer.DetachedMode,
+                InteractiveMode = CreateContainer.InteractiveMode,
+                RemoveOnExit = CreateContainer.RemoveOnExit,
+                AdditionalParams = CreateContainer.AdditionalParams
+            };
+
+            var (Success, Output, Error) = _dockerService.CreateContainer(containerParams);
+
+            if (Success)
+            {
+                System.Windows.MessageBox.Show($"Container created successfully: {CreateContainer.ContainerName}", "Success");
+                ReloadContainers();
+                
+                CreateContainer = new CreateContainerViewModel();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show($"Failed to create container: {Error}", "Error");
+            }
+        }
+
+        private string GenerateContainerName(string imageName)
+        {
+            var baseName = imageName.Split('/').Last().Split(':').First();
+            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            return $"{baseName}_{timestamp}";
+        }
+
         private void StopContainer(object? parameter)
         {
             if (parameter is not ContainerInfo container)
@@ -118,6 +200,7 @@ namespace Docky.Desktop.ViewModels
         {
             if (parameter is not ContainerInfo container)
                 return;
+
             (bool Success, string Output, string Error) = _dockerService.StartContainer(container.ContainerId);
 
             if (Success)
@@ -126,6 +209,13 @@ namespace Docky.Desktop.ViewModels
                 System.Windows.MessageBox.Show($"Failed to start container: {container.ContainerId}", "Error");
 
             ReloadContainers();
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
